@@ -13,7 +13,7 @@ userController.createUser = async (req, res, next) => {
       return next();
     } else {
       // **CHECK**: when user signs up with already used username  
-      return res.redirect('/signup');
+      return res.status(409).json({ message: 'Username already exists!'});
     }
   } catch (err) {
     return next({
@@ -31,6 +31,7 @@ userController.verifyUser = async (req, res, next) => {
     const foundUserInfo = await User.findOne({ username: username });
     console.log(foundUserInfo);
     const correctPW = await bcrypt.compare(password, foundUserInfo.password);
+    if (!foundUserInfo || !correctPW) return res.status(401).json({ message: 'Username or password incorrect'});
     res.locals.verified = correctPW;
     return next();
   } catch {
