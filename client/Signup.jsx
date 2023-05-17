@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import styles from './LoginSignup.scss';
 
 export default function Signup() {
   const [userCreated, setUserCreated] = useState(false);
@@ -9,7 +10,7 @@ export default function Signup() {
     if (userCreated) {
       navigate('/login');
     }
-  }, [navigate, userCreated]);
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -38,12 +39,22 @@ export default function Signup() {
   return (
     <div id='signupPage'>
       <div className='ProjectName'>Code Snippets</div>
+
       <div className='credentialBox'>
         <form onSubmit={handleSubmit}>
-          <input type='text' name='username' />
-          <input type='password' name='password' />
-          <button type='submit'>Sign Up</button>
-          <button>Login</button>
+          <div>
+            <label htmlFor='username'>Username</label>
+            <input type='text' name='username' />
+          </div>
+          <div>
+            <label htmlFor='password'>Password</label>
+            <input type='password' name='password' />
+          </div>
+
+          <p>Already a user?</p>
+          <Link to='/login'>
+            <button>Login</button>
+          </Link>
         </form>
       </div>
     </div>
