@@ -10,11 +10,11 @@ const app = express();
 app.use(cookieParser());
 
 // verifyCookie before getSnippets
-router.get('/', cookieController.setCookie, snippetsController.getSnippets, (req, res) => {
+router.get('/', snippetsController.getSnippets, (req, res) => {
   if (res.locals.isUserFound) {
     res.status(200).json(res.locals.allSnippets);
   } else {
-    res.status(404).send('Could not find User');
+    res.status(404).json({ message:'Could not find User'});
   }
 }
 );

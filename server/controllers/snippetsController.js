@@ -3,8 +3,13 @@ const User = require('../models/userModel.js');
 const snippetsController = {};
 
 snippetsController.getSnippets = async (req, res, next) => {
+  console.log('in getSnippets');
   // How to find the snippets regarding user
-  const userId = req.cookies.verified;
+  const dummyid = '64640ae480a02887c1e45d58';
+  req.cookies.ssid = dummyid;
+  const userId = req.cookies.ssid;
+  console.log(req.cookies);
+
   try {
     const foundUser = await User.findOne({ _id: userId });
     console.log('foundUser: ', foundUser);
@@ -28,10 +33,20 @@ snippetsController.getSnippets = async (req, res, next) => {
 snippetsController.createSnippet = async (req, res, next) => {
   const { title, comments, storedCode, tags, language } = req.body;
   const snippet = { title, comments, storedCode, tags, language };
-  const userId = req.cookies.verified;
+  const dummyid = '64640ae480a02887c1e45d58';
+  req.cookies.ssid = dummyid;
+  const userId = req.cookies.ssid;
   try {
     const foundUser = await User.findById({ _id: userId });
-    // foundUser.snippets;
+
+    const newSnippet = {
+      id: userId + 1,
+      ...snippet,
+    };
+
+    foundUser.snippets.push(newSnippet);
+    await foundUser.save();
+    return next();
   } catch (err) {
     return next({
       log: `Error in getSnippets controller method: ${err}`,
@@ -40,35 +55,35 @@ snippetsController.createSnippet = async (req, res, next) => {
     });
   }
 
-  User.findById({ _id: userId })
-    .then((user) => {
-      // Increment the lastId and assign it to the new snippet
-      const newSnippetId = user.lastId + 1;
-      user.lastId = newSnippetId;
+  // User.findById({ _id: userId })
+  //   .then((user) => {
+  //     // Increment the lastId and assign it to the new snippet
+  //     const newSnippetId = user.lastId + 1;
+  //     user.lastId = newSnippetId;
 
-      // Create the new snippet object with the assigned ID
-      const newSnippet = {
-        id: newSnippetId,
-        ...snippet,
-      };
+  //     // Create the new snippet object with the assigned ID
+  //     const newSnippet = {
+  //       id: newSnippetId,
+  //       ...snippet,
+  //     };
 
-      // Push the new snippet to the snippets array
-      user.snippets.push(newSnippet);
+  //     // Push the new snippet to the snippets array
+  //     user.snippets.push(newSnippet);
 
-      const [tags, languages] = recalcTagsAndLang(user);
-      user.tags = tags;
-      user.languages = languages;
+  //     const [tags, languages] = recalcTagsAndLang(user);
+  //     user.tags = tags;
+  //     user.languages = languages;
 
-      // Save the updated user document
-      return user.save().then((updatedUser) => {
-        res.locals.createdSnippet = newSnippet;
-        next();
-      });
-    })
-    .catch((error) => {
-      console.error('Creating a snippet has failed:', error);
-      next(error);
-    });
+  //     // Save the updated user document
+  //     return user.save().then((updatedUser) => {
+  //       res.locals.createdSnippet = newSnippet;
+  //       next();
+  //     });
+  //   })
+  //   .catch((error) => {
+  //     console.error('Creating a snippet has failed:', error);
+  //     next(error);
+  //   });
 };
  
 snippetsController.updateSnippet = (req, res, next) => {

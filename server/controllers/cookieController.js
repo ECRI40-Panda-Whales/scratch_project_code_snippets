@@ -3,11 +3,15 @@ const cookieController = {};
 cookieController.setCookie = (req, res, next) => {
   if (!res.locals.verified) {
     return next({
-      log: 'error',
+      log: 'setCookie error',
+      status: 400,
       message: { err: 'Invalid username or password' }
     });
   }
-  res.cookie('ssid', res.locals.verified, { httpOnly: true });
+  const cookie = res.cookie('ssid', res.locals.verified, { httpOnly: true });
+  console.log(res.locals.verified);
+  // console.log('cookie response: ', cookie);
+  console.log('cookies: ', res.cookie);
   return next();
 };
   

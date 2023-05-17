@@ -26,11 +26,9 @@ app.use(cookieParser());
 
 app.use('/snippets', snippetsRouter);
 
-app.use((req, res) => res.status(404).send('Invalid endpoint'));
-
 app.post('/signup', userController.createUser, (req, res) => {
-  if (res.locals.createUser) {
-    return res.status(200); // **TODO**: Where should we redirect user to after successful signup?
+  if (res.locals.createdUser) {
+    return res.status(201).json({ message: 'Success' }); // **TODO**: Where should we redirect user to after successful signup?
   } else {
     return res.status(409).json({ message: 'User already exists!' });
   }
@@ -40,11 +38,15 @@ app.post('/signup', userController.createUser, (req, res) => {
 app.post('/login', userController.verifyUser, cookieController.setCookie, (req, res) => {
   // what should happen here on successful log in?
   if (res.locals.verified) {
-    return res.status(201); // **TODO**: Where should we redirect user to after successful login?
+    return res.status(201).json({ message: 'Success' }); // **TODO**: Where should we redirect user to after successful login?
   } else {
     return res.status(409).json({ message: 'Username already exists!'});
   }
 });
+
+
+
+app.use((req, res) => res.status(404).send('Invalid endpoint'));
 
 app.use((err, req, res, next) => {
   const defaultErr = {
