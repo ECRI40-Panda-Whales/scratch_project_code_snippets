@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import SnippetDisplay from '../../components/SnippetDisplay/SnippetDisplay.jsx';
 import AddSnippet from '../../components/AddSnippet/AddSnippet.jsx';
-import SnippetsRadioList from './SnippetsRadioList/SnippetsRadioList.jsx';
 import arrow from '../../assets/arrow.png';
 import img from '../../assets/star nose mole.jpeg';
 
@@ -44,16 +43,23 @@ const Sidebar = () => {
     return tabs;
   };
 
-  useEffect(() => getSnippet(), []);
+  useEffect(getSnippet, []);
 
   const toggleSidebar = () => {
     setCollapse(() => !collapse);
   };
 
   return (
-    <span>
-      <div id='sidebar'>
+    <>
+      <div id='sidebar' className={collapse ? 'sidebar' : 'open'}>
         <h1>Code Snippets</h1>
+        <button className='toggleButton' onClick={toggleSidebar}>
+          <img
+            className={collapse ? 'arrowOpen' : 'arrow'}
+            src={arrow}
+            alt='arrow'
+          />
+        </button>
         <div className='searchBar'>
           <form id='search-form' role='search'>
             <input id='s' type='search' name='s' placeholder='Search' />
@@ -78,7 +84,7 @@ const Sidebar = () => {
           />
         )}
       </div>
-    </span>
+    </>
   );
 };
 
