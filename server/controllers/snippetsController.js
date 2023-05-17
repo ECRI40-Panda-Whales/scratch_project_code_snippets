@@ -25,12 +25,22 @@ snippetsController.getSnippets = async (req, res, next) => {
   }
 };
 
-snippetsController.createSnippet = (req, res, next) => {
+snippetsController.createSnippet = async (req, res, next) => {
   const { title, comments, storedCode, tags, language } = req.body;
   const snippet = { title, comments, storedCode, tags, language };
-  const userId = '645fee9104d1f0acef95a002';
+  const userId = req.cookies.verified;
+  try {
+    const foundUser = await User.findById({ _id: userId });
+    // foundUser.snippets;
+  } catch (err) {
+    return next({
+      log: `Error in getSnippets controller method: ${err}`,
+      status: 400,
+      message: 'Error while getting Snippets',
+    });
+  }
 
-  User.findById(userId)
+  User.findById({ _id: userId })
     .then((user) => {
       // Increment the lastId and assign it to the new snippet
       const newSnippetId = user.lastId + 1;

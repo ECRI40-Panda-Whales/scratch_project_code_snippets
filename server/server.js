@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const cors = require('cors');
+const cookieParser = require('cookie-parser'); 
 
 const userController = require('./controllers/userController');
 const cookieController = require('./controllers/cookieController');
@@ -24,6 +25,7 @@ const snippetsRouter = require('./routes/snippets');
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.use('/snippets', snippetsRouter);
 

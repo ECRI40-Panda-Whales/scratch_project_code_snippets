@@ -1,10 +1,13 @@
 const express = require('express');
+const cookieParser = require('cookie-parser'); 
 
 const snippetsController = require('../controllers/snippetsController');
 const cookieController = require('../controllers/cookieController');
 const router = express.Router();
 
 const app = express();
+
+app.use(cookieParser());
 
 // verifyCookie before getSnippets
 router.get('/', cookieController.setCookie, snippetsController.getSnippets, (req, res) => {
