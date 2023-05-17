@@ -7,7 +7,7 @@ const cors = require('cors');
 const port = process.env.PORT || 3000;
 
 const mongoURI =
-  'mongodb+srv://paaoul:Melikeit1@scratchcluster.igf2bag.mongodb.net/';
+  'mongodb+srv://sjkimsuzy:pandawhale@cluster0.twld2fg.mongodb.net/?retryWrites=true&w=majority';
 
 mongoose.connect(mongoURI);
 

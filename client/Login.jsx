@@ -50,7 +50,7 @@ export default function Login(){
           <input type="text" name="username" />
           <input type="password" name="password" />
           <button type ="submit">Login</button>
-          <button>Signup</button>
+          <button>Sign Up</button>
         </form>
       </div>
     </div>
