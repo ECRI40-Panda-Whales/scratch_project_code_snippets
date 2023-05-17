@@ -1,24 +1,42 @@
 const express = require('express');
+const cookieParser = require('cookie-parser'); 
 
 const snippetsController = require('../controllers/snippetsController');
-
+const cookieController = require('../controllers/cookieController');
 const router = express.Router();
 
-router.get('/', snippetsController.getSnippets, (req, res) =>
-  res.status(200).json(res.locals.allSnippets)
-);
+const app = express();
 
-router.post('/', snippetsController.createSnippet, (req, res) =>
-  res.status(200).json(res.locals.createdSnippet)
-);
+app.use(cookieParser());
 
-router.put('/', snippetsController.updateSnippet, (req, res) =>
-  res.status(200).json(res.locals.updatedSnippet)
-);
+// verifyCookie before getSnippets
+router.get('/', snippetsController.getSnippets, (req, res) => {
+  if (res.locals.isUserFound) {
+    res.status(200).json(res.locals.allSnippets);
+  } else {
+    res.status(404).json({ message:'Could not find User'});
+  }
+});
 
-router.delete('/', snippetsController.deleteSnippet, (req, res) =>
-  res.status(200).json(res.locals.deletedSnippet)
-);
+router.post('/', snippetsController.createSnippet, (req, res) => {
+  return res.status(200).json({ message: 'Successful post'});
+});
+
+router.put('/', snippetsController.updateSnippet, (req, res) => {
+  if (res.locals.updatedSnippet) {
+    return res.status(200).json({ message: 'Successful update'});
+  } else {
+    return res.status(404).json({ message: 'Unsuccessful update'});
+  }
+});
+
+router.delete('/', snippetsController.deleteSnippet, (req, res) => {
+  if (res.locals.deletedSnippet) {
+    return res.status(200).json({ message: 'Successful delete'});
+  } else {
+    return res.status(404).json({ message: 'Unsuccessful delete'});
+  }
+});
 
 router.use((req, res) => res.status(404).send('Invalid endpoint'));
 
