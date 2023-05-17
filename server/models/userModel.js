@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-  username: { type: String, required: true },
+  username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   tags: {
     type: Object,
@@ -31,5 +31,31 @@ const userSchema = new Schema({
     default: [],
   },
 });
+
+// const User = mongoose.model('User', userSchema);
+
+// const newUser = new User({
+//   username: 'jeff',
+//   password: 'password',
+//   tags: {},
+//   languages: {},
+//   lastId: 0,
+//   snippets: [
+//     {
+//       id: 1,
+//       title: 'coolio',
+//       comments: 'PLEASE',
+//       storedCode: 'console.log("hi");',
+//       tags: [''],
+//       language: 'JavaScript',
+//     }
+//   ]
+// });
+
+// newUser.save()
+//   .then(() => console.log('SAVED THE USER'))
+//   .catch((err) => console.log(err));
+
+// module.exports = { User };
 
 module.exports = mongoose.model('User', userSchema);
