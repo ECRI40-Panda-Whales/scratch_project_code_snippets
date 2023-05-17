@@ -2,135 +2,137 @@ const User = require('../models/userModel.js');
 
 const snippetsController = {};
 
-snippetsController.getSnippets = (req, res, next) => {
-  const userId = '645fee9104d1f0acef95a002';
+snippetsController.getSnippets = async (req, res, next) => {
+  console.log('in getSnippets');
+  // How to find the snippets regarding user
+  const dummyid = '6465293ac133d4efef0fe5cc';
+  req.cookies.ssid = dummyid;
+  const userId = req.cookies.ssid;
+  console.log('req cookies: ', req.cookies.ssid);
 
-  User.findOne({ _id: userId })
-    .then((user) => {
-      res.locals.allSnippets = user;
-      return next();
-    })
-    .catch((err) => {
-      console.log('Could not find user', err);
-      next(err);
+  try {
+    const foundUser = await User.findOne({ _id: userId });
+    console.log('foundUser: ', foundUser);
+    if (foundUser) {
+      res.locals.isUserFound = true;
+      res.locals.allSnippets = foundUser.snippets;
+      console.log('All snippets: ', res.locals.allSnippets);
+    } else {
+      res.locals.isUserFound = false;
+    }
+    return next();
+  } catch (err) {
+    return next({
+      log: `Error in getSnippets controller method: ${err}`,
+      status: 400,
+      message: 'Error while getting Snippets',
     });
+  }
 };
 
-snippetsController.createSnippet = (req, res, next) => {
+snippetsController.createSnippet = async (req, res, next) => {
   const { title, comments, storedCode, tags, language } = req.body;
   const snippet = { title, comments, storedCode, tags, language };
-  const userId = '645fee9104d1f0acef95a002';
+  const dummyid = '6465293ac133d4efef0fe5cc';
+  req.cookies.ssid = dummyid;
+  const userId = req.cookies.ssid;
+  try {
+    const foundUser = await User.findById({ _id: userId });
 
-  User.findById(userId)
-    .then((user) => {
-      // Increment the lastId and assign it to the new snippet
-      const newSnippetId = user.lastId + 1;
-      user.lastId = newSnippetId;
-
-      // Create the new snippet object with the assigned ID
-      const newSnippet = {
-        id: newSnippetId,
-        ...snippet,
-      };
-
-      // Push the new snippet to the snippets array
-      user.snippets.push(newSnippet);
-
-      const [tags, languages] = recalcTagsAndLang(user);
-      user.tags = tags;
-      user.languages = languages;
-
-      // Save the updated user document
-      return user.save().then((updatedUser) => {
-        res.locals.createdSnippet = newSnippet;
-        next();
-      });
-    })
-    .catch((error) => {
-      console.error('Creating a snippet has failed:', error);
-      next(error);
+    const newSnippet = {
+      id: userId + 1,
+      ...snippet,
+    };
+    foundUser.snippets.push(newSnippet);
+    await foundUser.save();
+    return next();
+  } catch (err) {
+    return next({
+      log: `Error in getSnippets controller method: ${err}`,
+      status: 400,
+      message: 'Error while getting Snippets',
     });
+  }
 };
  
-snippetsController.updateSnippet = (req, res, next) => {
+snippetsController.updateSnippet = async (req, res, next) => {
   const { id, title, comments, storedCode, tags, language } = req.body;
-  const updatedSnippet = { id, title, comments, storedCode, tags, language };
-  const userId = '645fee9104d1f0acef95a002';
-
-  User.findOneAndUpdate(
-    { _id: userId, 'snippets.id': updatedSnippet.id },
-    {
-      $set: { 'snippets.$': updatedSnippet },
-    },
-    { new: true }
-  )
-    .then((updatedUser) => {
-      const [tags, languages] = recalcTagsAndLang(updatedUser);
-      updatedUser.tags = tags;
-      updatedUser.languages = languages;
-      return updatedUser.save();
-    })
-    .then((savedUser) => {
-      res.locals.updatedSnippet = updatedSnippet;
-      next();
-    })
-    .catch((err) => {
-      console.log('Updating the snippet has failed:', err);
-      next(err);
-    });
-};
-
-snippetsController.deleteSnippet = (req, res, next) => {
-  const { id } = req.query;
-  const userId = '645fee9104d1f0acef95a002';
-
-  User.findOne({ _id: userId })
-    .then((user) => {
-      const deletedSnippet = user.snippets.find((snippet) => {
-        return `${snippet.id}` === id;
-      });
-
-      // Remove the snippet from the user's snippets array
-      user.snippets = user.snippets.filter((snippet) => `${snippet.id}` !== id);
-
-      //recalculate the tags and languages.
-      const [tags, languages] = recalcTagsAndLang(user);
-      user.tags = tags;
-      user.languages = languages;
-
-      // Save the updated user document
-      return user.save().then(() => {
-        res.locals.deletedSnippet = deletedSnippet;
-        next();
-      });
-    })
-    .catch((error) => {
-      console.error('Error deleting snippet:', error);
-      next(error);
-    });
-};
-// helper function to re-calculate taglist/language counts?
-const recalcTagsAndLang = function (user) {
-  const tagList = {};
-  const languageList = {};
-
-  for (const snippet of user.snippets) {
-    if (Array.isArray(snippet.tags)) {
-      for (const tag of snippet.tags) {
-        if (!tagList[tag]) {
-          tagList[tag] = [];
-        }
-        tagList[tag].push(snippet);
-      }
-
-      if (!languageList[snippet.language]) {
-        languageList[snippet.language] = [];
-      }
-      languageList[snippet.language].push(snippet);
+  const updatedSnippetData = { id, title, comments, storedCode, tags, language };
+  const dummyid = '64640ae480a02887c1e45d58';
+  req.cookies.ssid = dummyid;
+  const userId = req.cookies.ssid;
+  try { 
+    // find user and specified snippet and update snippet
+    const updatedSnippet = await User.findOneAndUpdate(
+      { _id: userId, 'snippets.id': id },
+      { $set: { 'snippets.$': updatedSnippetData }},
+      { new: true },
+    );
+    // sending our snippets route an update flag
+    if (updatedSnippet) {
+      res.locals.updated = true;
+    } else {
+      res.locals.updated = false;
     }
+    return next();
+  } catch (err) {
+    return next({
+      log: `Error in updateSnippet controller method: ${err}`,
+      status: 400,
+      message: 'Error while updating Snippets',
+    });
   }
-  //return something here.
-  return [tagList, languageList];
 };
+
+snippetsController.deleteSnippet = async (req, res, next) => {
+  const { id } = req.body;
+  const dummyid = '64640ae480a02887c1e45d58';
+  req.cookies.ssid = dummyid;
+  const userId = req.cookies.ssid;
+
+  try {
+    const deletedSnippet = await User.findOneAndUpdate(
+      { _id: userId },
+      { $pull: { snippets: { 'id': { $eq: id }}}}, // using mongo operators to remove from existing array instances of a value that matches snippets: { 'id': id }
+      { new: true }
+    );
+    if (deletedSnippet) {
+      res.locals.deletedSnippet = true;
+    } else {
+      res.locals.deletedSnippet = false;
+    }
+    return next();
+  } catch (err) {
+    return next({
+      log: `Error in deleteSnippet controller method: ${err}`,
+      status: 400,
+      message: 'Error while deleting Snippets',
+    });
+  }
+};
+
+// helper function to re-calculate taglist/language counts?
+// const recalcTagsAndLang = function (user) {
+//   const tagList = {};
+//   const languageList = {};
+
+//   for (const snippet of user.snippets) {
+//     if (Array.isArray(snippet.tags)) {
+//       for (const tag of snippet.tags) {
+//         if (!tagList[tag]) {
+//           tagList[tag] = [];
+//         }
+//         tagList[tag].push(snippet);
+//       }
+
+//       if (!languageList[snippet.language]) {
+//         languageList[snippet.language] = [];
+//       }
+//       languageList[snippet.language].push(snippet);
+//     }
+//   }
+//   //return something here.
+//   return [tagList, languageList];
+// };
 
 module.exports = snippetsController;

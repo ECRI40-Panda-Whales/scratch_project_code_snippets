@@ -2,7 +2,7 @@ import React from 'react';
 import MainContainer from './src/containers/MainContainer/MainContainer.jsx';
 
 const App = () => (
-  <div id="app">
+  <div id='app'>
     <MainContainer />
   </div>
 );

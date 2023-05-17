@@ -48,12 +48,14 @@ module.exports = {
   },
   devServer: {
     static: {
-      publicPath: '/dist/',
-      directory: path.resolve(__dirname, 'dist')
+      directory: path.resolve(__dirname, './dist'),
+      publicPath: './dist',
     },
+    compress: true,
+    port: 8080,
     proxy: {
-      '/snippets': 'http://localhost:3000'
-    }
+      '*': 'http://localhost:3000',
+    },
   },
   devtool: 'eval-source-map'
 };
