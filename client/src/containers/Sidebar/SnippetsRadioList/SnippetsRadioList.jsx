@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import styles from './SnippetsRadioList.module.scss';
+//import styles from './SnippetsRadioList.module.scss';
 import { Fragment } from 'react';
 
 function SnippetsRadioList(props) {
