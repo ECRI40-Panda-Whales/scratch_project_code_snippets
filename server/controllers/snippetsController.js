@@ -2,18 +2,40 @@ const User = require('../models/userModel.js');
 
 const snippetsController = {};
 
-snippetsController.getSnippets = (req, res, next) => {
-  const userId = '645fee9104d1f0acef95a002';
+snippetsController.getSnippets = async (req, res, next) => {
+  // const userId = '645fee9104d1f0acef95a002';
 
-  User.findOne({ _id: userId })
-    .then((user) => {
-      res.locals.allSnippets = user;
-      return next();
-    })
-    .catch((err) => {
-      console.log('Could not find user', err);
-      next(err);
+  // User.findOne({ _id: userId })
+  //   .then((user) => {
+  //     res.locals.allSnippets = user;
+  //     return next();
+  //   })
+  //   .catch((err) => {
+  //     console.log('Could not find user', err);
+  //     next(err);
+  //   });
+
+  // How to find the snippets regarding user
+  const { username } = req.params;
+  console.log('username: ', username);
+  try {
+    const foundUser = await User.findOne({ username: username });
+    console.log('foundUser: ', foundUser);
+    if (foundUser) {
+      res.locals.isUserFound = true;
+      res.locals.allSnippets = foundUser.snippets;
+      console.log('All snippets: ', res.locals.allSnippets);
+    } else {
+      res.locals.isUserFound = false;
+    }
+    return next();
+  } catch (err) {
+    return next({
+      log: `Error in getSnippets controller method: ${err}`,
+      status: 400,
+      message: 'Error while getting Snippets',
     });
+  }
 };
 
 snippetsController.createSnippet = (req, res, next) => {

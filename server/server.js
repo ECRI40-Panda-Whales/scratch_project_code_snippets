@@ -4,12 +4,19 @@ const app = express();
 const mongoose = require('mongoose');
 const cors = require('cors');
 
+const userController = require('./controllers/userController');
+
 const port = process.env.PORT || 3000;
 
-const mongoURI =
-  'mongodb+srv://paaoul:Melikeit1@scratchcluster.igf2bag.mongodb.net/';
+const MONGO_URI =
+'mongodb+srv://jeff-user:OhcSk2i7cb6bNJU7@cluster0.5z6r4sx.mongodb.net/?retryWrites=true&w=majority';
 
-mongoose.connect(mongoURI);
+mongoose.connect(MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+  .then(() => console.log('Connected to Mongo DB.'))
+  .catch(err => console.log(err));
 
 const snippetsRouter = require('./routes/snippets');
 
@@ -20,6 +27,24 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/snippets', snippetsRouter);
 
 app.use((req, res) => res.status(404).send('Invalid endpoint'));
+
+app.post('/signup', userController.createUser, (req, res) => {
+  if (res.locals.createUser) {
+    return res.status(200); // **TODO**: Where should we redirect user to after successful signup?
+  } else {
+    return res.status(409).json({ message: 'User already exists!' });
+  }
+});
+
+// call makeCookie after verify
+app.post('/login', userController.verifyUser, (req, res) => {
+  // what should happen here on successful log in?
+  if (res.locals.verified) {
+    return res.status(201); // **TODO**: Where should we redirect user to after successful login?
+  } else {
+    return res.status(409).json({ message: 'Username already exists!'});
+  }
+});
 
 app.use((err, req, res, next) => {
   const defaultErr = {

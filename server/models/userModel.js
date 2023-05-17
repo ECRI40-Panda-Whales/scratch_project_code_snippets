@@ -32,4 +32,30 @@ const userSchema = new Schema({
   },
 });
 
+// const User = mongoose.model('User', userSchema);
+
+// const newUser = new User({
+//   username: 'jeff',
+//   password: 'password',
+//   tags: {},
+//   languages: {},
+//   lastId: 0,
+//   snippets: [
+//     {
+//       id: 1,
+//       title: 'coolio',
+//       comments: 'PLEASE',
+//       storedCode: 'console.log("hi");',
+//       tags: [''],
+//       language: 'JavaScript',
+//     }
+//   ]
+// });
+
+// newUser.save()
+//   .then(() => console.log('SAVED THE USER'))
+//   .catch((err) => console.log(err));
+
+// module.exports = { User };
+
 module.exports = mongoose.model('User', userSchema);

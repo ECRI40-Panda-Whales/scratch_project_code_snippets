@@ -4,8 +4,16 @@ const snippetsController = require('../controllers/snippetsController');
 
 const router = express.Router();
 
-router.get('/', snippetsController.getSnippets, (req, res) =>
-  res.status(200).json(res.locals.allSnippets)
+const app = express();
+
+// verifyCookie before getSnippets
+router.get('/:username', snippetsController.getSnippets, (req, res) => {
+  if (res.locals.isUserFound) {
+    res.status(200).json(res.locals.allSnippets);
+  } else {
+    res.status(404).send('Could not find User');
+  }
+}
 );
 
 router.post('/', snippetsController.createSnippet, (req, res) =>
