@@ -31,7 +31,7 @@ userController.verifyUser = async (req, res, next) => {
     console.log(foundUserInfo);
     const correctPW = await bcrypt.compare(password, foundUserInfo.password);
     if (!foundUserInfo || !correctPW) return res.status(401).json({ message: 'Username or password incorrect'});
-    res.locals.verified = correctPW;
+    res.locals.verified = foundUserInfo._id;
     return next();
   } catch {
     return next({

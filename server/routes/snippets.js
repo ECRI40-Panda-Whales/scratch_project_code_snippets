@@ -1,13 +1,13 @@
 const express = require('express');
 
 const snippetsController = require('../controllers/snippetsController');
-
+const cookieController = require('../controllers/cookieController');
 const router = express.Router();
 
 const app = express();
 
 // verifyCookie before getSnippets
-router.get('/:username', snippetsController.getSnippets, (req, res) => {
+router.get('/', cookieController.setCookie, snippetsController.getSnippets, (req, res) => {
   if (res.locals.isUserFound) {
     res.status(200).json(res.locals.allSnippets);
   } else {

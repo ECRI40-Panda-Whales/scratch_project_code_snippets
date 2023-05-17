@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 const userController = require('./controllers/userController');
+const cookieController = require('./controllers/cookieController');
 
 const port = process.env.PORT || 3000;
 
@@ -37,7 +38,7 @@ app.post('/signup', userController.createUser, (req, res) => {
 });
 
 // call makeCookie after verify
-app.post('/login', userController.verifyUser, (req, res) => {
+app.post('/login', userController.verifyUser, cookieController.setCookie, (req, res) => {
   // what should happen here on successful log in?
   if (res.locals.verified) {
     return res.status(201); // **TODO**: Where should we redirect user to after successful login?
