@@ -8,10 +8,8 @@ cookieController.setCookie = (req, res, next) => {
       message: { err: 'Invalid username or password' }
     });
   }
-  const cookie = res.cookie('ssid', res.locals.verified, { httpOnly: true });
-  console.log(res.locals.verified);
-  // console.log('cookie response: ', cookie);
-  console.log('cookies: ', res.cookie);
+  res.cookie('ssid', res.locals.verified, { httpOnly: true });
+
   return next();
 };
   
