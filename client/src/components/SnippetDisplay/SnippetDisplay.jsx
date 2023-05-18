@@ -30,11 +30,11 @@ const SnippetDisplay = ({ selectedSnippet, getSnippet }) => {
   const [editButtonState, setEditButtonState] = useState(false);
 
   const deleteSnippet = (id) => {
+    console.log(id);
+
     fetch(`http://localhost:3000/snippets?id=${id}`, {
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'Application/JSON',
-      },
+      credentials: 'include',
     })
       .then((response) => {
         if (response.ok) {

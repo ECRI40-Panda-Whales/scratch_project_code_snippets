@@ -1,3 +1,4 @@
+const { redirect } = require('react-router-dom');
 const Session = require('../models/sessionModel');
 
 const sessionController = {};
@@ -7,11 +8,11 @@ const sessionController = {};
  * verify whether or not the session is still valid.
  */
 sessionController.isLoggedIn = (req, res, next) => {
-  Session.findOne({ cookieId: req.cookies.verified }).then((results) => {
+  Session.findOne({ cookieId: req.cookies.ssid }).then((results) => {
     if (results) {
       res.locals.authorized = true;
     } else {
-      res.locals.authorized = false;
+      redirect('/login');
     }
     return next();
   });
@@ -21,17 +22,15 @@ sessionController.isLoggedIn = (req, res, next) => {
  * startSession - create and save a new Session into the database.
  */
 sessionController.startSession = (req, res, next) => {
-  console.log('started the startSession middleware');
-  if (res.locals.ssid) {
-    Session.create({ cookieId: res.locals.ssid })
+  if (req.cookies.ssid) {
+    Session.create({ cookieId: req.cookies.ssid })
       .then(() => {
-        console.log('created the session');
         return next();
       })
       .catch(() => {
         return next({
           log: 'Error creating session',
-          message: { err: 'Problem creating session' }
+          message: { err: 'Problem creating session' },
         });
       });
   }

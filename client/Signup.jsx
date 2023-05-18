@@ -19,6 +19,8 @@ export default function Signup() {
     user.username = e.target.elements.username.value;
     user.password = e.target.elements.password.value;
 
+    console.log(user);
+
     fetch('/signup', {
       method: 'POST',
       headers: {
@@ -50,12 +52,12 @@ export default function Signup() {
             <label htmlFor='password'>Password</label>
             <input type='password' name='password' />
           </div>
-
-          <p>Already a user?</p>
-          <Link to='/login'>
-            <button>Login</button>
-          </Link>
+          <button type='submit'>Sign Up</button>
         </form>
+        <p>Already a user?</p>
+        <Link to='/login'>
+          <button>Login</button>
+        </Link>
       </div>
     </div>
   );

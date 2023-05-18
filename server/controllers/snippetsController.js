@@ -1,14 +1,15 @@
 const User = require('../models/userModel.js');
 
 const snippetsController = {};
+let counter = 0;
 
 snippetsController.getSnippets = async (req, res, next) => {
   if (!res.locals.authorized) return next(); // if user not logged in, move on
- 
+
   console.log('in getSnippets');
   // How to find the snippets regarding user
-  const dummyid = '6465293ac133d4efef0fe5cc';
-  req.cookies.ssid = dummyid;
+  // const dummyid = '6465293ac133d4efef0fe5cc';
+  // req.cookies.ssid = dummyid;
   const userId = req.cookies.ssid;
   console.log('req cookies: ', req.cookies.ssid);
 
@@ -37,14 +38,14 @@ snippetsController.createSnippet = async (req, res, next) => {
 
   const { title, comments, storedCode, tags, language } = req.body;
   const snippet = { title, comments, storedCode, tags, language };
-  const dummyid = '6465293ac133d4efef0fe5cc';
-  req.cookies.ssid = dummyid;
+  // const dummyid = '6465293ac133d4efef0fe5cc';
+  // req.cookies.ssid = dummyid;
   const userId = req.cookies.ssid;
   try {
     const foundUser = await User.findById({ _id: userId });
 
     const newSnippet = {
-      id: userId + 1,
+      id: userId + counter++,
       ...snippet,
     };
     foundUser.snippets.push(newSnippet);
@@ -58,22 +59,29 @@ snippetsController.createSnippet = async (req, res, next) => {
     });
   }
 };
- 
+
 snippetsController.updateSnippet = async (req, res, next) => {
   if (!res.locals.authorized) return next(); // if user not logged in, move on
 
   const { id, title, comments, storedCode, tags, language } = req.body;
-  const updatedSnippetData = { id, title, comments, storedCode, tags, language };
-  const dummyid = '6465293ac133d4efef0fe5cc';
-  req.cookies.ssid = dummyid;
+  const updatedSnippetData = {
+    id,
+    title,
+    comments,
+    storedCode,
+    tags,
+    language,
+  };
+  // const dummyid = '6465293ac133d4efef0fe5cc';
+  // req.cookies.ssid = dummyid;
   const userId = req.cookies.ssid;
 
-  try { 
+  try {
     // find user and specified snippet and update snippet
     const updatedSnippet = await User.findOneAndUpdate(
       { _id: userId, 'snippets.id': id },
-      { $set: { 'snippets.$': updatedSnippetData }},
-      { new: true },
+      { $set: { 'snippets.$': updatedSnippetData } },
+      { new: true }
     );
     // sending our snippets route an update flag
     if (updatedSnippet) {
@@ -95,16 +103,17 @@ snippetsController.deleteSnippet = async (req, res, next) => {
   if (!res.locals.authorized) return next(); // if user not logged in, move on
 
   const { id } = req.query;
-  const dummyid = '6465293ac133d4efef0fe5cc';
-  req.cookies.ssid = dummyid;
+  // const dummyid = '6465293ac133d4efef0fe5cc';
+  // req.cookies.ssid = dummyid;
   const userId = req.cookies.ssid;
 
   try {
     const deletedSnippet = await User.findOneAndUpdate(
       { _id: userId },
-      { $pull: { snippets: { 'id': { $eq: id }}}}, // using mongo operators to remove from existing array instances of a value that matches snippets: { 'id': id }
+      { $pull: { snippets: { id: { $eq: id } } } }, // using mongo operators to remove from existing array instances of a value that matches snippets: { 'id': id }
       { new: true }
     );
+    //console.log('deletedSnippet:', deletedSnippet);
     if (deletedSnippet) {
       res.locals.deletedSnippet = true;
     } else {

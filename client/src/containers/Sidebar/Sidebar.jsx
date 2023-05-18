@@ -17,11 +17,11 @@ const Sidebar = () => {
   // getSnippet func
   const getSnippet = () => {
     setLoading(true);
-    fetch('http://localhost:3000/snippets')
+    fetch('http://localhost:3000/snippets', { credentials: 'include' })
       .then((res) => res.json())
       .then((res) => {
         // console.log('res', res);
-
+        if (!res) navigate('/login');
         // moved setSnippets to outside of for loop so we arent re-rendering each time a snippet is added to state
         const newSnippetArray = [];
         for (const snippet of res) newSnippetArray.push(snippet);
