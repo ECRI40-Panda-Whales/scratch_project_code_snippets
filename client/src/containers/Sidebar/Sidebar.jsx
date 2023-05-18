@@ -5,7 +5,7 @@ import styles from './Sidebar.module.scss';
 import SnippetsRadioList from './SnippetsRadioList/SnippetsRadioList.jsx';
 import { Card, Spinner } from 'react-bootstrap';
 import arrow from '../../assets/arrow.png';
-import img from '../../assets/star nose mole.jpeg';
+import img from '../../assets/panda whale.jpg';
 
 const Sidebar = () => {
   const [snippets, setSnippets] = useState([]);
@@ -20,7 +20,7 @@ const Sidebar = () => {
     fetch('http://localhost:3000/snippets')
       .then((res) => res.json())
       .then((res) => {
-       // console.log('res', res);
+        // console.log('res', res);
 
         // moved setSnippets to outside of for loop so we arent re-rendering each time a snippet is added to state
         const newSnippetArray = [];
