@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 
 const userController = require('./controllers/userController');
 const cookieController = require('./controllers/cookieController');
+const sessionController = require('./controllers/sessionController');
 
 const port = process.env.PORT || 3000;
 
@@ -26,23 +27,29 @@ app.use(cookieParser());
 
 app.use('/snippets', snippetsRouter);
 
-app.post('/signup', userController.createUser, (req, res) => {
-  if (res.locals.createdUser) {
-    return res.status(201).json({ message: 'Success' }); // **TODO**: Where should we redirect user to after successful signup?
-  } else {
-    return res.status(409).json({ message: 'User already exists!' });
-  }
-});
+app.post('/signup', 
+  userController.createUser, 
+  (req, res) => {
+    if (res.locals.createdUser) {
+      return res.status(201).json({ message: 'Success' }); // **TODO**: Where should we redirect user to after successful signup?
+    } else {
+      return res.status(409).json({ message: 'User already exists!' });
+    }
+  });
 
 // call makeCookie after verify
-app.post('/login', userController.verifyUser, cookieController.setCookie, (req, res) => {
+app.post('/login', 
+  userController.verifyUser, 
+  cookieController.setCookie, 
+  sessionController.startSession,
+  (req, res) => {
   // what should happen here on successful log in?
-  if (res.locals.verified) {
-    return res.status(201).json({ message: 'Success' }); // **TODO**: Where should we redirect user to after successful login?
-  } else {
-    return res.status(409).json({ message: 'Username already exists!'});
-  }
-});
+    if (res.locals.verified) {
+      return res.status(201).json({ message: 'Success' }); // **TODO**: Where should we redirect user to after successful login?
+    } else {
+      return res.status(409).json({ message: 'Username already exists!'});
+    }
+  });
 
 
 

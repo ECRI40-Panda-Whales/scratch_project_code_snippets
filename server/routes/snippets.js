@@ -2,7 +2,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser'); 
 
 const snippetsController = require('../controllers/snippetsController');
-const cookieController = require('../controllers/cookieController');
+const sessionController = require('../controllers/sessionController');
 const router = express.Router();
 
 const app = express();
@@ -10,7 +10,7 @@ const app = express();
 app.use(cookieParser());
 
 // verifyCookie before getSnippets
-router.get('/', snippetsController.getSnippets, (req, res) => {
+router.get('/', sessionController.isLoggedIn, snippetsController.getSnippets, (req, res) => {
   if (res.locals.isUserFound) {
     res.status(200).json(res.locals.allSnippets);
   } else {
@@ -18,19 +18,19 @@ router.get('/', snippetsController.getSnippets, (req, res) => {
   }
 });
 
-router.post('/', snippetsController.createSnippet, (req, res) => {
+router.post('/', sessionController.isLoggedIn, snippetsController.createSnippet, (req, res) => {
   return res.status(200).json({ message: 'Successful post'});
 });
 
-router.put('/', snippetsController.updateSnippet, (req, res) => {
-  if (res.locals.updatedSnippet) {
+router.patch('/', sessionController.isLoggedIn, snippetsController.updateSnippet, (req, res) => {
+  if (res.locals.updated) {
     return res.status(200).json({ message: 'Successful update'});
   } else {
     return res.status(404).json({ message: 'Unsuccessful update'});
   }
 });
 
-router.delete('/', snippetsController.deleteSnippet, (req, res) => {
+router.delete('/', sessionController.isLoggedIn, snippetsController.deleteSnippet, (req, res) => {
   if (res.locals.deletedSnippet) {
     return res.status(200).json({ message: 'Successful delete'});
   } else {
