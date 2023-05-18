@@ -32,10 +32,13 @@ const SnippetDisplay = ({ selectedSnippet, getSnippet }) => {
   const deleteSnippet = (id) => {
     fetch(`http://localhost:3000/snippets?id=${id}`, {
       method: 'DELETE',
+      headers: {
+        'Content-Type': 'Application/JSON',
+      },
     })
       .then((response) => {
         if (response.ok) {
-          getSnippet();
+          window.location.reload(false);
         }
       })
       .catch((err) => {
@@ -59,7 +62,7 @@ const SnippetDisplay = ({ selectedSnippet, getSnippet }) => {
       language: snippetLanguage,
     };
 
-    console.log(updatedSnippet)
+    console.log(updatedSnippet);
     // within fetch request (post)
     // body: JSON.stringify(created object)
     fetch(`/snippets?id=${id}`, {
@@ -72,7 +75,7 @@ const SnippetDisplay = ({ selectedSnippet, getSnippet }) => {
       .then((response) => {
         // response.json();
         console.log(response.json());
-        window.location.reload(false)
+        window.location.reload(false);
       })
       .catch((err) => {
         return {
