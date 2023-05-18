@@ -20,11 +20,11 @@ const Sidebar = () => {
     fetch('http://localhost:3000/snippets')
       .then((res) => res.json())
       .then((res) => {
-        console.log('res', res);
+       // console.log('res', res);
 
         // moved setSnippets to outside of for loop so we arent re-rendering each time a snippet is added to state
         const newSnippetArray = [];
-        for (const snippet of res.snippets) newSnippetArray.push(snippet);
+        for (const snippet of res) newSnippetArray.push(snippet);
 
         setSnippets(newSnippetArray);
         setLoading(false);
@@ -86,17 +86,18 @@ const Sidebar = () => {
             />
           </div>
         </Card.Body>
-        
-        <h2 className={styles.imgHeader} style={{ display:'inline-block'}}>Click me to add a new snippet!</h2>
+
+        <h2 className={styles.imgHeader} style={{ display: 'inline-block' }}>
+          Click me to add a new snippet!
+        </h2>
         <button
           className={styles.addButton}
           onClick={() => {
             setOpenModal(true);
           }}
         >
-          <img src={img} alt="img" className={styles.img}/>
+          <img src={img} alt='img' className={styles.img} />
         </button>
-
       </Card>
       {openModal && <AddSnippet closeModal={setOpenModal} />}
       <div
