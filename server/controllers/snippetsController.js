@@ -3,6 +3,8 @@ const User = require('../models/userModel.js');
 const snippetsController = {};
 
 snippetsController.getSnippets = async (req, res, next) => {
+  if (!res.locals.authorized) return next(); // if user not logged in, move on
+ 
   console.log('in getSnippets');
   // How to find the snippets regarding user
   const dummyid = '6465293ac133d4efef0fe5cc';
@@ -31,6 +33,8 @@ snippetsController.getSnippets = async (req, res, next) => {
 };
 
 snippetsController.createSnippet = async (req, res, next) => {
+  if (!res.locals.authorized) return next(); // if user not logged in, move on
+
   const { title, comments, storedCode, tags, language } = req.body;
   const snippet = { title, comments, storedCode, tags, language };
   const dummyid = '6465293ac133d4efef0fe5cc';
@@ -56,11 +60,14 @@ snippetsController.createSnippet = async (req, res, next) => {
 };
  
 snippetsController.updateSnippet = async (req, res, next) => {
+  if (!res.locals.authorized) return next(); // if user not logged in, move on
+
   const { id, title, comments, storedCode, tags, language } = req.body;
   const updatedSnippetData = { id, title, comments, storedCode, tags, language };
-  const dummyid = '64640ae480a02887c1e45d58';
+  const dummyid = '6465293ac133d4efef0fe5cc';
   req.cookies.ssid = dummyid;
   const userId = req.cookies.ssid;
+
   try { 
     // find user and specified snippet and update snippet
     const updatedSnippet = await User.findOneAndUpdate(
@@ -85,8 +92,10 @@ snippetsController.updateSnippet = async (req, res, next) => {
 };
 
 snippetsController.deleteSnippet = async (req, res, next) => {
-  const { id } = req.body;
-  const dummyid = '64640ae480a02887c1e45d58';
+  if (!res.locals.authorized) return next(); // if user not logged in, move on
+
+  const { id } = req.query;
+  const dummyid = '6465293ac133d4efef0fe5cc';
   req.cookies.ssid = dummyid;
   const userId = req.cookies.ssid;
 
