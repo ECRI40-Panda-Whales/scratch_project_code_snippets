@@ -23,7 +23,7 @@ router.post('/', sessionController.isLoggedIn, snippetsController.createSnippet,
 });
 
 router.patch('/', sessionController.isLoggedIn, snippetsController.updateSnippet, (req, res) => {
-  if (res.locals.updateSnippet) {
+  if (res.locals.updated) {
     return res.status(200).json({ message: 'Successful update'});
   } else {
     return res.status(404).json({ message: 'Unsuccessful update'});
