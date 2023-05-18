@@ -19,10 +19,8 @@ export default function Login() {
     const user = {};
     user.username = e.target.elements.username.value;
     user.password = e.target.elements.password.value;
-    console.log('Username is', user.username);
-    console.log('Password is', user.password);
 
-    fetch('/login', {
+    fetch('https://localhost:3000/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -53,11 +51,11 @@ export default function Login() {
         <form onSubmit={handleSubmit}>
           <div>
             <label htmlFor='username'>Username</label>
-            <input type='text' name='username' />
+            <input type='text' name='username' id='username'/>
           </div>
           <div>
             <label htmlFor='password'>Password</label>
-            <input type='password' name='password' />
+            <input type='password' name='password' id='password'/>
           </div>
 
           <button type='submit'>Login</button>
